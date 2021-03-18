@@ -13,15 +13,44 @@ export const fetchPosts = () => async dispatch =>
     });
 };
 
+// export const fetchUser = (userId) => async dispatch => 
+// {
+//     const response = await jsonPlaceholder.get(`/users/${userId}`);
+
+//     dispatch({
+//         type: "FETCH_USER",
+//         payload: response.data
+//     });
+// };
+
+
 // Memoize from lodash library to same get data once 
 
-export const fetchUser = (userId) => dispatch =>  _fetchUser(userId, dispatch);
+// export const fetchUser = (userId) => dispatch =>  _fetchUser(userId, dispatch);
 
-const _fetchUser = _.memoize(async (userId, dispatch) => {
+// const _fetchUser = _.memoize(async (userId, dispatch) => {
+//     const response = await jsonPlaceholder.get(`/users/${userId}`);
+
+//     dispatch({
+//         type: "FETCH_USER",
+//         payload: response.data
+//     });
+// });
+
+export const fetchPostsAndUsers = () => async (dispatch, getState) => 
+{
+    await dispatch(fetchPosts());
+    const userids = _.uniq(_.map(getState().posts, "userId"));
+    userids.forEach(id => dispatch(fetchUser(id)));
+    // dispatch(fetchUser());
+};
+
+export const fetchUser = (userId) => async dispatch => 
+{
     const response = await jsonPlaceholder.get(`/users/${userId}`);
 
     dispatch({
         type: "FETCH_USER",
         payload: response.data
     });
-});
+};
