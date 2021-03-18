@@ -40,9 +40,15 @@ export const fetchPosts = () => async dispatch =>
 export const fetchPostsAndUsers = () => async (dispatch, getState) => 
 {
     await dispatch(fetchPosts());
-    const userids = _.uniq(_.map(getState().posts, "userId"));
-    userids.forEach(id => dispatch(fetchUser(id)));
-    // dispatch(fetchUser());
+    // const userids = _.uniq(_.map(getState().posts, "userId"));
+    // userids.forEach(id => dispatch(fetchUser(id)));
+
+    //Refactor and use chain from lodash
+    _.chain(getState().posts)
+    .map("userId")
+    .uniq()
+    .forEach(id => dispatch(fetchUser(id)))
+    .value();
 };
 
 export const fetchUser = (userId) => async dispatch => 
